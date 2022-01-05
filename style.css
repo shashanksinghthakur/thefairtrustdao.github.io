@@ -201,16 +201,16 @@ template {
 }
 
 :root {
-    --brandprimary: #f64c72;
+    --brandprimary: #d55e2d;
     --brandsecondary: #c3073f;
-    --brandtertiary: #d4dff0;
-    --dark01: #190061;
-    --dark01-accent: #1f3044;
-    --dark02: #2f2f82;
-    --dark02-accent: #243952;
-    --dark03: #553d68;
+    --brandtertiary: #285d8c;
+    --dark01: #f9f9f9;
+    --dark01-accent: #1b2a3b;
+    --dark02: #d8d8d6;
+    --dark02-accent: #061a31;
+    --dark03: #a0b3c1;
     --dark03-accent: #99738e;
-    --white: #fff
+    --white: #285d8c
 }
 
 html {
@@ -506,6 +506,8 @@ header {
     z-index: 10;
     display: flex;
     padding: 20px;
+    background-color: #d8d8d6;
+    transition: top 0.3s;
     position: fixed;
     top: 0;
     box-sizing: border-box
