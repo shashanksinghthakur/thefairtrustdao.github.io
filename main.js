@@ -11,125 +11,110 @@ function scrollFunction() {
 }*/
 
 
-var el = document.querySelectorAll(".rt-container ul > div");
+const line = document.querySelector(".timeline-innerline");
 
-function isElementInViewport(el) {
-    var rect = el.getBoundingClientRect();
-    return rect.top >= 0 && rect.left >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+let i = 0;
+let i2 = 1;
+let target1 = document.querySelector(".timeline ul");
+let target2 = document.querySelectorAll(".timeline ul li");
+
+const timeline_events = document.querySelectorAll("ul li");
+
+function showTime(e) {
+    e.setAttribute("done", "true");
+    e.querySelector(".timeline-point").style.background = "#d55e2d";
+    e.querySelector(".date").style.opacity = "100%";
+    e.querySelector("p").style.opacity = "100%";
+    e.querySelector("p").style.transform = "translateY(0px)";
 }
 
-/* JS will not correctly work when switching between desktop and mobile unless in debug mode */
+function hideTime(e) {
+    e.removeAttribute("done");
+    e.querySelector(".timeline-point").style.background = "rgb(228, 228, 228)";
+    e.querySelector(".date").style.opacity = "0%";
+    e.querySelector("p").style.opacity = "0%";
+    e.querySelector("p").style.transform = "translateY(-10px)";
+}
 
-$(function() {
+function slowLoop() {
+    setTimeout(function() {
+        showTime(timeline_events[i]);
+        timelineProgress(i + 1);
+        i++;
+        if (i < timeline_events.length) {
+            slowLoop();
+        }
+    }, 800);
+}
 
-    var timeline = $('#timeline').find('.line');
-    var timelineDot = $(timeline).find('.dot');
-    var numDots = $(timeline).find('.year.dot').length * 4 + 1;
-    var mobileYear = $(timeline).find('.year.dot');
-    var mobileDefault = $(timeline).find('.dot.js-mobile-default');
 
-    $(mobileDefault).addClass('active');
+function timelineProgress(value) {
+    let progress = `${(value / timeline_events.length) * 100}%`;
+    if (window.matchMedia("(min-width: 728px)").matches) {
+        line.style.width = progress;
+        line.style.height = "4px";
+    } else {
+        line.style.height = progress;
+        line.style.width = "4px";
+    }
+}
 
-    // CONTENT SWITCH
-    $(timelineDot).each(function() {
-        $(this).click(function() {
-            var currentDesc = $('#description').find('.section-wrapper > div');
-            $(currentDesc).hide();
-
-            matchContent($(this)).fadeIn();
-        });
-    });
-
-    var resizeTimer;
-    var initialSize = $(window).width();
-
-    $(window).resize(function() {
-
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
-            var delayedSize = $(window).width();
-            // if we resize but not enough to change layout, proceed as usual
-            if ((initialSize > 480 && delayedSize > 480) || (initialSize < 481 && delayedSize < 481)) {
-                if (initialSize > 480 && delayedSize > 480) {
-                    desktopTimeline();
-                } else if (initialSize < 481 && delayedSize < 481) {
-                    mobileTimeline();
+let observer = new IntersectionObserver(
+    (entries) => {
+        entries.forEach((entry) => {
+            if (entry.intersectionRatio > 0.9) {
+                if (window.matchMedia("(min-width: 728px)").matches) {
+                    slowLoop();
+                } else {
+                    showTime(entry.target);
+                    timelineProgress(i2);
+                    i2++;
                 }
+                observer.unobserve(entry.target);
             }
+        });
+    }, { threshold: 1, rootMargin: "0px 0px -50px 0px" }
+);
 
-            // if we resize the page and switch between desktop and mobile layouts, reload the page
-            else {
-                location.reload();
-            }
-
-            initialSize = delayedSize;
-        }, 250);
-
+if (window.matchMedia("(min-width: 728px)").matches) {
+    observer.observe(target1);
+} else {
+    target2.forEach((t) => {
+        observer.observe(t);
     });
+}
 
-    // DESKTOP FUNCTIONALITY
-    function desktopTimeline() {
-        $(timelineDot).each(function() {
 
-            // highlight the appropriate portion of the line as you click the dots
-            var ind = Number(findIndex($(this)));
-            var x = round((0.9 / numDots) * ind * 100, 4);
-            var y = round(((0.9 / numDots) * 100 / 2), 4);
-            var z = x + y;
+timeline_events.forEach((li, index) => {
+    li.addEventListener("click", () => {
+        if (li.getAttribute("done")) {
+            timelineProgress(index);
 
-            $(this).click(function() {
-                $(timelineDot).removeClass('active complete');
-                $(this).addClass('active');
-                $(this).prevAll('.dot').addClass('complete');
-                $(timeline).css({
-                    background: 'linear-gradient(to right, ' +
-                        '#C0392B ' + z + '%, ' +
-                        '#FBFCFC ' + z + '%)'
-                });
+            // hide all timeline events from last upto the point clicked
+            timeline_events.forEach((ev, idx) => {
+                if (idx >= index) {
+                    hideTime(ev);
+                }
             });
-        });
-    }
-
-    // MOBILE FUNCTIONALITY
-    function mobileTimeline() {
-        $(timelineDot).click(function() {
-            var mobileQuarter = $(this).nextUntil('.year.dot');
-
-            if ($(this).hasClass('year')) {
-
-                $(timelineDot).not($(this)).removeClass('active complete');
-                $(this).addClass('complete');
-                $(this).next().addClass('active');
-                $(this).prevAll('.dot.year').addClass('complete');
-                $('.dot.quarter').not(mobileQuarter).slideUp(500);
-                $(mobileQuarter).slideDown(500);
-
-            } else if ($(this).hasClass('quarter')) {
-
-                var parentYear = $(this).prevUntil('.dot.year');
-
-                $(this).addClass('active');
-                $(timelineDot).not($(this)).removeClass('active');
-                $(mobileQuarter).add(mobileYear).removeClass('complete');
-                $(parentYear).add($(this)).add($(this).prevAll('.dot.year')).addClass('complete');
-            }
-        });
-    }
-
-    // RETRIEVE ELEMENT'S INDEX AMONG VISIBLE DOTS
-    function findIndex(dataInd) {
-        return $(dataInd).attr('data-index');
-    }
-    // FIND MATCHING CONTENT
-    function matchContent(matchedContent) {
-        return $('#description').find('.section-wrapper > div[data-index="' + $(matchedContent).attr("data-index") + '"]');
-    }
-
-    // ROUND DECIMALS
-    function round(value, decimals) {
-        return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
-    }
-
-
-    $(window).resize();
+        } else {
+            timelineProgress(index + 1);
+            // show all timeline events from first upto the point clicked
+            timeline_events.forEach((ev, idx) => {
+                if (idx <= index) {
+                    showTime(ev);
+                }
+            });
+        }
+    });
 });
+
+var doit;
+window.addEventListener("resize", () => {
+    clearTimeout(doit);
+    doit = setTimeout(resizeEnd, 1200);
+});
+
+function resizeEnd() {
+    i = 0;
+    slowLoop();
+}

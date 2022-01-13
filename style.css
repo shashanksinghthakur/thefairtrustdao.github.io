@@ -768,6 +768,26 @@ nav.socials ul li a:hover svg {
     transition: fill .2s ease
 }
 
+.footer-links {
+    fill: var(--white);
+    word-spacing: 2.2px;
+    transition: fill .2s ease;
+    padding: 10px;
+    padding-left: 10px;
+}
+
+.footer-links a {
+    display: inline-block;
+    line-height: 2.5;
+    text-decoration: none;
+    color: inherit;
+}
+
+.footer-links a:hover {
+    color: #d55e2d;
+    transition: fill .2s ease
+}
+
 #hero {
     position: relative;
     padding: 150px 0 0;
@@ -1157,190 +1177,127 @@ nav.socials ul li a:hover svg {
     left: 25px
 }
 
-section {
-    width: 100%;
-    box-sizing: border-box;
-    min-height: 33vh;
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
 }
 
-section .section-wrapper {
-    padding: 10px;
-    box-sizing: border-box;
-    height: 100%;
+.timeline {
+    margin-top: 35px;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: 40% auto;
+    justify-content: center;
 }
 
-.line {
-    width: 90%;
-    height: 4px;
-    background: linear-gradient(to right, #C0392B 13.25%, #FBFCFC 13.25%);
-    margin-top: 20vh;
-    margin-left: 5%;
+ul {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
 }
 
-.line:hover {
-    cursor: pointer;
-}
-
-.line .year {
-    background-color: #FBFCFC;
-    border-radius: 50%;
-    float: left;
+li {
+    margin-top: 30px;
     position: relative;
-    left: 5.3%;
-    box-sizing: border-box;
-    margin-right: calc(2.65% - 12.5px);
-    margin-left: calc(2.65% - 12.5px);
-    width: 25px;
-    height: 25px;
-    top: -10px;
+    padding: 25px;
 }
 
-.line .year::before {
-    content: attr(data-timelinelabel);
+li p {
+    padding: 0 20px;
+    transition: 1s;
+}
+
+.date {
     position: absolute;
-    top: -40px;
-    left: -5px;
-    width: 150px;
-    display: block;
-    font-size: 0.8em;
-    font-weight: bold;
+    top: 30px;
+    left: -50px;
+    opacity: 0;
+    transition: 1s;
+    font-size: 12px;
 }
 
-.line .year::after {
-    content: attr(data-mobiletext);
-    position: absolute;
-    top: 23px;
-    left: -15px;
-    padding: 10px;
-}
-
-.line .quarter {
-    background-color: #FBFCFC;
-    border-radius: 50%;
-    float: left;
+.timeline-line {
+    background: rgb(228, 228, 228);
+    width: 4px;
+    border-radius: 12px;
     position: relative;
-    left: 5.3%;
-    box-sizing: border-box;
-    margin-right: calc(2.65% - 7.5px);
-    margin-left: calc(2.65% - 7.5px);
-    width: 15px;
-    height: 15px;
-    top: -5px;
+    justify-self: end;
 }
 
-.line .complete {
-    background-color: #C0392B;
+.timeline-point {
+    border: none;
+    position: absolute;
+    border-radius: 50%;
+    background: rgb(228, 228, 228);
+    width: 8px;
+    height: 8px;
+    top: 30px;
+    left: -6px;
+    transition: 1s ease;
 }
 
-.line .dot.active {
-    background-color: #C0392B;
-    cursor: pointer;
+.timeline-innerline {
+    position: absolute;
+    background: #d55e2d;
+    width: 4px;
+    height: 0%;
+    top: 0%;
+    left: 0%;
+    transition: 1s linear;
 }
 
-#timeline {
-    padding-bottom: 50px;
-}
-
-#description {
-    min-height: 30vh;
-    background-color: #34495E;
-}
-
-#description h3 {
-    color: #C0392B;
-    font-weight: 600;
-}
-
-#description .section-wrapper>div {
-    display: none;
-}
-
-#description .section-wrapper>div.text-default {
-    display: block;
-}
-
-@media all and (max-width: 760px) {
-    .line .year {
-        width: 20px;
-        height: 20px;
-        margin-right: calc(2.65% - 10px);
-        margin-left: calc(2.65% - 10px);
-        top: -8px;
+@media screen and (min-width: 728px) {
+    .timeline {
+        display: block;
     }
-    .line .quarter {
-        width: 10px;
-        height: 10px;
-        margin-right: calc(2.65% - 5px);
-        margin-left: calc(2.65% - 5px);
-        top: -3px;
+    ul {
+        flex-direction: row;
     }
-}
-
-@media all and (min-width: 481px) {
-    .quarter.q1 {
-        display: none;
-    }
-    .dot:hover {
-        background-color: #34495E;
-        cursor: pointer;
-    }
-}
-
-@media all and (max-width: 480px) {
-    #timeline {
-        padding-bottom: 20px;
-        padding-top: 0;
-    }
-    .line {
-        height: auto;
-        background: transparent;
-        margin-top: 20px;
-    }
-    .line .year,
-    .line .quarter {
-        border-radius: 0;
-        float: none;
-        position: static;
-        margin-right: 0;
-        margin-left: 0;
-        box-sizing: border-box;
+    li {
+        margin-top: 0px;
+        position: relative;
         width: 100%;
-        height: 42px;
-        text-align: center;
-        transition: background-color 500ms;
+        padding: 0px;
     }
-    .line .year::after,
-    .line .quarter::after {
-        content: attr(data-mobiletext);
-        display: block;
-        padding-top: 12px;
+    li p {
+        transform: translateY(-10px);
+        opacity: 0;
+        /* padding: 0 20px; */
+        transition: 1s;
     }
-    .line .year.complete,
-    .line .quarter.complete {
-        background-color: #34495E;
-        color: #FBFCFC;
+    .date {
+        opacity: 0;
+        transition: 1s;
+        font-size: 12px;
+        position: absolute;
+        top: -60px;
+        left: 38%;
     }
-    .line .year.active,
-    .line .year.complete.active,
-    .line .quarter.active,
-    .line .quarter.complete.active {
-        background-color: #C0392B;
-        color: #FBFCFC;
+    .timeline-point {
+        width: 15px;
+        height: 15px;
+        top: -40px;
+        left: 40%;
+        transition: 1s ease;
     }
-    .line .year {
-        display: block;
+    .timeline-line {
+        width: 100%;
+        height: 4px;
     }
-    .line .year::before {
-        display: none;
-    }
-    .line .year::after {
-        position: static;
-    }
-    .line .quarter {
-        display: none;
-    }
-    .line .quarter.y2017 {
-        display: block;
+    .timeline-innerline {
+        position: absolute;
+        background: #d55e2d;
+        width: 0%;
+        height: 4px;
+        top: 0%;
+        left: 0%;
+        transition: 1s linear;
+        border-radius: 999px;
     }
 }
 
